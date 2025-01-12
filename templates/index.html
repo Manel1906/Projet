@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
+  <script>
+    // Fonction pour ouvrir la fenêtre modale
+    function openModal(prediction_text, formData) {
+      document.getElementById("modalResultText").innerText = prediction_text;
+      document.getElementById("formData").innerText = formData;
+      document.getElementById("resultModal").style.display = "block";
+    }
+
+    // Fonction pour fermer la fenêtre modale
+    function closeModal() {
+      document.getElementById("resultModal").style.display = "none";
+    }
+
+    // Fermer la fenêtre modale si l'utilisateur clique en dehors de celle-ci
+    window.onclick = function (event) {
+      var modal = document.getElementById("resultModal");
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    };
+  </script>
+  <title>Prédiction du Diabète</title>
+</head>
+
+<body>
+  <div class="form-container">
+    <h2>Prédiction du Diabète</h2>
+    <form method="POST" action="/predict">
+      <label for="nbr_grossesses">Nombre de grossesses :</label>
+      <input type="number" id="nbr_grossesses" name="nbr_grossesses" required />
+
+      <label for="glucose">Taux de glucose :</label>
+      <input type="number" id="glucose" name="glucose" step="any" required />
+
+      <label for="tension">Tension :</label>
+      <input type="number" id="tension" name="tension" required />
+
+      <label for="epaisseur_peau">Épaisseur de la peau :</label>
+      <input type="number" id="epaisseur_peau" name="epaisseur_peau" required />
+
+      <label for="insulin">Taux d'insuline :</label>
+      <input type="number" id="insulin" name="insulin" step="any" required />
+
+      <label for="IMC">IMC :</label>
+      <input type="number" id="IMC" name="IMC" step="any" required />
+
+      <label for="Coef_hereditaire">Coefficient héréditaire :</label>
+      <input type="number" id="Coef_hereditaire" name="Coef_hereditaire" step="any" required />
+
+      <label for="age">Âge :</label>
+      <input type="number" id="age" name="age" required />
+
+      <button type="submit">Prédire</button>
+    </form>
+  </div>
+
+  <!-- Modal Popup -->
+  <div id="resultModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Résultat de la Prédiction</h2>
+      <p id="modalResultText"></p>
+      <p id="formData"></p>
+    </div>
+  </div>
+
+  {% if prediction_text %}
+  <script>
+    // Ouvrir la popup avec les données et la prédiction après le rendu de la page
+    openModal(
+      "{{ prediction_text }}",
+      "Nombre de grossesses : {{ form_data['nbr_grossesses'] }}, Taux de glucose : {{ form_data['glucose'] }}, Tension : {{ form_data['tension'] }}, Épaisseur de la peau : {{ form_data['epaisseur_peau'] }}, Taux d'insuline : {{ form_data['insulin'] }}, IMC : {{ form_data['IMC'] }}, Coefficient héréditaire : {{ form_data['Coef_hereditaire'] }}, Âge : {{ form_data['age'] }}"
+    );
+  </script>
+  {% endif %}
+</body>
+
+</html>
